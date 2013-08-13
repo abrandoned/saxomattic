@@ -22,10 +22,7 @@ module Saxomattr
 
   def self.included(klass)
     klass.extend(HookManagementMethods)
-    klass.__send__(:include, ::ActiveAttr::BlockInitialization)
-    klass.__send__(:include, ::ActiveAttr::TypecastedAttributes)
-    klass.__send__(:include, ::ActiveAttr::QueryAttributes)
-    klass.__send__(:include, ::ActiveAttr::Serialization)
+    klass.__send__(:include, ::ActiveAttr::Model)
     klass._capture_active_attr_methods(klass)
     klass.__send__(:include, ::SAXMachine)
     klass._capture_sax_machine_methods(klass)
@@ -55,19 +52,25 @@ module Saxomattr
       options = args.extract_options!
       field = args.first
 
-      _active_attr_attribute(field, _active_attr_attributes(options))
+      # If you want to setup a default set of elements, you can!
+      # :default => [ true, false, false, true ]
+      if options[:elements] && !options[:elements].kind_of?(Array)
+        options.merge!(:default => [])
+      end
+
+      _active_attr_attribute(field, _active_attr_attributes(options.dup))
 
       case
       when options[:ancestor] then
-        _sax_machine_ancestor(field, _sax_machine_attributes(options))
+        _sax_machine_ancestor(field, _sax_machine_attributes(options.dup))
       when options[:attribute] then
-        _sax_machine_attribute(field, _sax_machine_attributes(options))
+        _sax_machine_attribute(field, _sax_machine_attributes(options.dup))
       when options[:elements] then
-        _sax_machine_elements(field, _sax_machine_attributes(options))
+        _sax_machine_elements(field, _sax_machine_attributes(options.dup))
       when options[:value] then
-        _sax_machine_value(field, _sax_machine_attributes(options))
+        _sax_machine_value(field, _sax_machine_attributes(options.dup))
       else # Default state is an element
-        _sax_machine_element(field, _sax_machine_attributes(options))
+        _sax_machine_element(field, _sax_machine_attributes(options.dup))
       end
     end
 
