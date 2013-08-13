@@ -49,15 +49,15 @@ active_attr.  So.......how about an example? (let's walk through the spec exampl
 
   xml = <<-XML
     <test>
-      <baz>#{baz}</baz>
+      <baz>baz</baz>
       <iso_8701>2013-01-13</iso_8701>
-      <datetime>#{DateTime.current}</datetime>
+      <datetime>2013-08-13T14:45:55-06:00</datetime>
       <embedded>
         <foo>2</foo>
-        <embed>#{embedded_message}</embed>
-        <embedception type="#{embedception_type}">#{embedception_value}</embedception>
+        <embed>HERE!</embed>
+        <embedception type="TYPE">VALUE</embedception>
       </embedded>
-      <date>#{Date.today}</date>
+      <date>2013-08-13</date>
       <foo>2</foo>
     </test>
     XML
@@ -65,6 +65,24 @@ active_attr.  So.......how about an example? (let's walk through the spec exampl
 
 The classes above `SaxTesterEmbedception`, `SaxTesterEmbedded`, `SaxTesterSomething` are the data models that map to the xml assigned to variable `xml`.
 Instead of the `sax-machine` `element` syntax we have standardized on using `attribute` to declare the attributes and how a model maps to the xml document. Any override of the attribute that would typically be handled in `sax-machine` by using `elements`, `attribute`, `value` need to be accessed through the hash syntax ... ie `attribute :type, :attribute => true` tells active_attr that the attribute `type` should have setters/getters and tells `sax-machine` that the value should come from the attribute on the xml node `type`.
+
+Parsing xml:
+
+```ruby
+  something = SaxTesterSomething.parse(xml)
+
+  something.baz                               # => baz
+  something.foo                               # => 2
+  something.foo_before_type_cast              # => "2"
+  something.embedded.size                     # => 1
+  something.embedded.first.foo                # => 2
+  something.embedded.first.embedception.type  # => "TYPE"
+  something.embedded.first.embedception.value # => "VALUE"
+```
+
+Based on this short example, hopefully you can see that declaring your data models is a great way to make data models based on xml documents easier to work with. And if you don't .... do something else!
+
+Enjoy!
 
 ## Contributing
 
