@@ -6,10 +6,6 @@ Add this line to your application's Gemfile:
 
     gem 'saxomattic'
 
-And then execute:
-
-    $ bundle
-
 Or install it yourself as:
 
     $ gem install saxomattic
@@ -66,6 +62,9 @@ active_attr.  So.......how about an example? (let's walk through the spec exampl
     </test>
     XML
 ```
+
+The classes above `SaxTesterEmbedception`, `SaxTesterEmbedded`, `SaxTesterSomething` are the data models that map to the xml assigned to variable `xml`.
+Instead of the `sax-machine` `element` syntax we have standardized on using `attribute` to declare the attributes and how a model maps to the xml document. Any override of the attribute that would typically be handled in `sax-machine` by using `elements`, `attribute`, `value` need to be accessed through the hash syntax ... ie `attribute :type, :attribute => true` tells active_attr that the attribute `type` should have setters/getters and tells `sax-machine` that the value should come from the attribute on the xml node `type`.
 
 ## Contributing
 
