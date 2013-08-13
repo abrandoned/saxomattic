@@ -1,4 +1,3 @@
-require 'pry'
 require "saxomattic/version"
 require "sax-machine"
 require "active_attr"
@@ -81,7 +80,6 @@ module Saxomattic
     def _sax_machine_attributes(options_hash = {})
       options_hash.slice!(::Saxomattic::SAX_MACHINE_ATTRIBUTES)
     end
-
   end
 
 end
