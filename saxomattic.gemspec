@@ -7,10 +7,10 @@ Gem::Specification.new do |gem|
   gem.name          = "saxomattic"
   gem.version       = Saxomattic::VERSION
   gem.authors       = ["Brandon Dewitt"]
-  gem.email         = ["brandonsdewitt@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.email         = ["brandonsdewitt+saxomattic@gmail.com"]
+  gem.description   = %q{ A gem to combine all the wonderful that is sax-machine with the magic that is active_attr }
+  gem.summary       = %q{ By including a module "Saxomattic" you can declare xml structured documents with active_attr goodies }
+  gem.homepage      = "https://github.com/abrandoned/saxomattic.git"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

@@ -1,4 +1,4 @@
-# Saxomattr
+# Saxomattic
 
 TODO: Write a gem description
 
