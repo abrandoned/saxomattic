@@ -25,6 +25,7 @@ class SaxTesterSomething
   attribute :date, :type => Date
   attribute :datetime, :type => DateTime
   attribute :embedded, :elements => true, :class => SaxTesterEmbedded
+  attribute :CAPITALIZATION, :as => :capitalization
 end
 
 describe ::Saxomattic do
@@ -47,6 +48,7 @@ describe ::Saxomattic do
       </embedded>
       <date>#{Date.today}</date>
       <foo>2</foo>
+      <CAPITALIZATION>cap</CAPITALIZATION>
     </test>
     XML
   }
