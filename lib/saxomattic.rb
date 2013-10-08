@@ -49,7 +49,8 @@ module Saxomattic
   module ClassMethods
     def attribute(*args)
       options = args.extract_options!
-      field = args.first
+      sax_field = args.first
+      attr_field = options[:as] || sax_field
 
       # If you want to setup a default set of elements, you can!
       # :default => [ true, false, false, true ]
@@ -57,28 +58,28 @@ module Saxomattic
         options.merge!(:default => [])
       end
 
-      _active_attr_attribute(field, _active_attr_attributes(options.dup))
+      _active_attr_attribute(attr_field, _active_attr_attributes(options.dup))
 
       case
       when options[:ancestor] then
-        _sax_machine_ancestor(field, _sax_machine_attributes(options.dup))
+        _sax_machine_ancestor(sax_field, _sax_machine_attributes(options.dup))
       when options[:attribute] then
-        _sax_machine_attribute(field, _sax_machine_attributes(options.dup))
+        _sax_machine_attribute(sax_field, _sax_machine_attributes(options.dup))
       when options[:elements] then
-        _sax_machine_elements(field, _sax_machine_attributes(options.dup))
+        _sax_machine_elements(sax_field, _sax_machine_attributes(options.dup))
       when options[:value] then
-        _sax_machine_value(field, _sax_machine_attributes(options.dup))
+        _sax_machine_value(sax_field, _sax_machine_attributes(options.dup))
       else # Default state is an element
-        _sax_machine_element(field, _sax_machine_attributes(options.dup))
+        _sax_machine_element(sax_field, _sax_machine_attributes(options.dup))
       end
     end
 
     def _active_attr_attributes(options_hash = {})
-      options_hash.slice!(::Saxomattic::ACTIVE_ATTR_ATTRIBUTES)
+      options_hash.slice(*::Saxomattic::ACTIVE_ATTR_ATTRIBUTES)
     end
 
     def _sax_machine_attributes(options_hash = {})
-      options_hash.slice!(::Saxomattic::SAX_MACHINE_ATTRIBUTES)
+      options_hash.slice(*::Saxomattic::SAX_MACHINE_ATTRIBUTES)
     end
   end
 
