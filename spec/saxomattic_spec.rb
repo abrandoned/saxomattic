@@ -16,6 +16,12 @@ class SaxTesterEmbedded
   attribute :embedception, :class => SaxTesterEmbedception
 end
 
+class SaxTesterChild
+  include Saxomattic
+
+  attribute :name
+end
+
 class SaxTesterSomething
   include Saxomattic
 
@@ -25,6 +31,7 @@ class SaxTesterSomething
   attribute :date, :type => Date
   attribute :datetime, :type => DateTime
   attribute :embedded, :elements => true, :class => SaxTesterEmbedded
+  attribute :child, :as => :children, :elements => true, :class => SaxTesterChild
   attribute :CAPITALIZATION, :as => :capitalization
 end
 
@@ -46,6 +53,14 @@ describe ::Saxomattic do
         <embed>#{embedded_message}</embed>
         <embedception type="#{embedception_type}">#{embedception_value}</embedception>
       </embedded>
+      <parent>
+        <child>
+          <name>John</name>
+        </child>
+        <child>
+          <name>Paul</name>
+        </child>
+      </parent>
       <date>#{Date.today}</date>
       <foo>2</foo>
       <CAPITALIZATION>cap</CAPITALIZATION>
@@ -83,6 +98,12 @@ describe ::Saxomattic do
       subject.embedded.first.embedception.type.should eq(embedception_type)
       subject.embedded.first.embedception.value.should eq(embedception_value)
       subject.embedded.first.embedception.not_even_used?.should be_false
+    end
+
+    it "extracts multiple children from a parent element" do
+      subject.children.size.should eq 2
+      subject.children.first.name.should eq "John"
+      subject.children.last.name.should eq "Paul"
     end
   end
 
