@@ -30,8 +30,8 @@ class SaxTesterSomething
   attribute :iso_8701, :type => Date
   attribute :date, :type => Date
   attribute :datetime, :type => DateTime
-  attribute :embedded, :elements => true, :class => SaxTesterEmbedded
-  attribute :child, :as => :children, :elements => true, :class => SaxTesterChild
+  attribute :embedded, :elements => true, :class => SaxTesterEmbedded, :default => []
+  attribute :child, :as => :children, :elements => true, :class => SaxTesterChild, :default => []
   attribute :CAPITALIZATION, :as => :capitalization
 end
 
@@ -47,7 +47,7 @@ describe ::Saxomattic do
     <test>
       <baz>#{baz}</baz>
       <iso_8701>2013-01-13</iso_8701>
-      <datetime>#{DateTime.current}</datetime>
+      <datetime>#{DateTime.now}</datetime>
       <embedded>
         <foo>2</foo>
         <embed>#{embedded_message}</embed>

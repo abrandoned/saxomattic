@@ -21,17 +21,26 @@ module Saxomattic
 
   def self.included(klass)
     klass.extend(HookManagementMethods)
-    klass.__send__(:include, ::ActiveAttr::Model)
-    klass._capture_active_attr_methods(klass)
     klass.__send__(:include, ::SAXMachine)
     klass._capture_sax_machine_methods(klass)
+    # Keep these in this order as the initialize call in 
+    # sax-machine doesn't `super` so we need it to be last in
+    klass.__send__(:include, ::ActiveAttr::Model)
+    klass._capture_active_attr_methods(klass)
     klass.extend(ClassMethods)
+  end
+
+  def initialize(*args)
+    _active_attr_initialize(*args)
+    _sax_machine_initialize(*args)
+    super
   end
 
   module HookManagementMethods
     def _capture_active_attr_methods(klass)
       class << klass
         alias_method :_active_attr_attribute, :attribute
+        alias_method :_active_attr_initialize, :initialize
       end
     end
 
@@ -42,6 +51,7 @@ module Saxomattic
         alias_method :_sax_machine_element, :element
         alias_method :_sax_machine_elements, :elements
         alias_method :_sax_machine_value, :value
+        alias_method :_sax_machine_initialize, :initialize
       end
     end
   end
