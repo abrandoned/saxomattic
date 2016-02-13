@@ -27,7 +27,7 @@ class SaxTesterSomething
 
   attribute :baz
   attribute :foo, :type => Integer
-  attribute :iso_8701, :type => Date
+  attribute :iso_8701, :typecaster => ActiveAttr::Typecasting::DateTypecaster.new
   attribute :date, :type => Date
   attribute :datetime, :type => DateTime
   attribute :embedded, :elements => true, :class => SaxTesterEmbedded, :default => []
@@ -36,7 +36,7 @@ class SaxTesterSomething
 end
 
 describe ::Saxomattic do
-
+  let(:iso_8701) { "2013-01-13" }
   let(:embedded_message) { "HERE!" }
   let(:embedception_type) { "TYPE" }
   let(:embedception_value) { "VALUE" }
@@ -46,7 +46,7 @@ describe ::Saxomattic do
     <<-XML
     <test>
       <baz>#{baz}</baz>
-      <iso_8701>2013-01-13</iso_8701>
+      <iso_8701>#{iso_8701}</iso_8701>
       <datetime>#{DateTime.now}</datetime>
       <embedded>
         <foo>2</foo>
@@ -82,6 +82,11 @@ describe ::Saxomattic do
     it "typecasts Dates when declared with type => Date" do
       expect(subject.date).to be_a(Date)
       expect(subject.date).to eq(Date.today)
+    end
+
+    it "typecasts Dates when declared with typecaster => ActiveAttr::Typecasting::DateTypecaster" do
+      expect(subject.iso_8701).to be_a(Date)
+      expect(subject.iso_8701).to eq(iso_8701.to_date)
     end
 
     it "embedded" do
