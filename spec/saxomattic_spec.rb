@@ -27,7 +27,7 @@ class SaxTesterSomething
 
   attribute :baz
   attribute :foo, :type => Integer
-  attribute :iso_8701, :type => Date
+  attribute :iso_8701, :typecaster => ActiveAttr::Typecasting::DateTypecaster.new
   attribute :date, :type => Date
   attribute :datetime, :type => DateTime
   attribute :embedded, :elements => true, :class => SaxTesterEmbedded, :default => []
@@ -36,7 +36,7 @@ class SaxTesterSomething
 end
 
 describe ::Saxomattic do
-
+  let(:iso_8701) { "2013-01-13" }
   let(:embedded_message) { "HERE!" }
   let(:embedception_type) { "TYPE" }
   let(:embedception_value) { "VALUE" }
@@ -46,7 +46,7 @@ describe ::Saxomattic do
     <<-XML
     <test>
       <baz>#{baz}</baz>
-      <iso_8701>2013-01-13</iso_8701>
+      <iso_8701>#{iso_8701}</iso_8701>
       <datetime>#{DateTime.now}</datetime>
       <embedded>
         <foo>2</foo>
@@ -71,39 +71,44 @@ describe ::Saxomattic do
   subject { SaxTesterSomething.parse(xml) }
 
   it "extracts elements when declared as attribute" do
-    subject.baz.should eq(baz)
+    expect(subject.baz).to eq(baz)
   end
 
   context "TypeCasting" do
     it "typecasts integers when declared with type => Integer" do
-      subject.foo.should eq(foo)
+      expect(subject.foo).to eq(foo)
     end
 
     it "typecasts Dates when declared with type => Date" do
-      subject.date.should be_a(Date)
-      subject.date.should eq(Date.today)
+      expect(subject.date).to be_a(Date)
+      expect(subject.date).to eq(Date.today)
+    end
+
+    it "typecasts Dates when declared with typecaster => ActiveAttr::Typecasting::DateTypecaster" do
+      expect(subject.iso_8701).to be_a(Date)
+      expect(subject.iso_8701).to eq(iso_8701.to_date)
     end
 
     it "embedded" do
-      subject.embedded.should be_a(Array)
-      subject.embedded.first.embed.should eq(embedded_message)
+      expect(subject.embedded).to be_a(Array)
+      expect(subject.embedded.first.embed).to eq(embedded_message)
     end
 
     it "typecasts embedded fields" do
-      subject.embedded.first.foo.should eq(foo)
+      expect(subject.embedded.first.foo).to eq(foo)
     end
 
     it "embeds values further" do
-      subject.embedded.first.embedception?.should be_true
-      subject.embedded.first.embedception.type.should eq(embedception_type)
-      subject.embedded.first.embedception.value.should eq(embedception_value)
-      subject.embedded.first.embedception.not_even_used?.should be_false
+      expect(subject.embedded.first.embedception?).to be true
+      expect(subject.embedded.first.embedception.type).to eq(embedception_type)
+      expect(subject.embedded.first.embedception.value).to eq(embedception_value)
+      expect(subject.embedded.first.embedception.not_even_used?).to be false
     end
 
     it "extracts multiple children from a parent element" do
-      subject.children.size.should eq 2
-      subject.children.first.name.should eq "John"
-      subject.children.last.name.should eq "Paul"
+      expect(subject.children.size).to eq 2
+      expect(subject.children.first.name).to eq "John"
+      expect(subject.children.last.name).to eq "Paul"
     end
   end
 

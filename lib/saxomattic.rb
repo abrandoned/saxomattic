@@ -8,7 +8,8 @@ require "active_support/core_ext/string/conversions"
 module Saxomattic
   ACTIVE_ATTR_ATTRIBUTES = [
     :default,
-    :type
+    :type,
+    :typecaster
   ].freeze
 
   SAX_MACHINE_ATTRIBUTES = [
@@ -23,7 +24,7 @@ module Saxomattic
     klass.extend(HookManagementMethods)
     klass.__send__(:include, ::SAXMachine)
     klass._capture_sax_machine_methods(klass)
-    # Keep these in this order as the initialize call in 
+    # Keep these in this order as the initialize call in
     # sax-machine doesn't `super` so we need it to be last in
     klass.__send__(:include, ::ActiveAttr::Model)
     klass._capture_active_attr_methods(klass)
